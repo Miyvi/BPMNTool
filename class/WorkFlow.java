@@ -20,8 +20,8 @@ public class WorkFlow {
 	{
 		h=hi;
 		l=li;
+		
 	}
-
 	
 	// ajoute une Pool
 	public void addPool(Pool p)
@@ -38,7 +38,7 @@ public class WorkFlow {
 	}
 	
 	// Permet d'ajouter un objet dans une pool /!\ il faut obligatoirement passer par cette méthode
-	public void addObject(int pool,Object o)
+	public void addObject(int pool,ObjectBPMN o)
 	{
 		o.setId(iter.get_id());
 		Pools.get(pool).AddObject(o);
@@ -46,7 +46,7 @@ public class WorkFlow {
 	}
 	
 	//retourne un objet dont l'id est passé en paramètres
-	public Object get_objet(int id)
+	public ObjectBPMN get_objet(int id)
 	{
 		for(int i=0;i<Pools.size();i++)
 		{
@@ -61,7 +61,7 @@ public class WorkFlow {
 	
 	
 	//retourne un objet dont la position et la ligne sont passés en parametre
-	public Object get_objet(int ligne,int col)
+	public ObjectBPMN get_objet(int ligne,int col)
 	{
 		int min=get_min_pos();
 		for(int i=0;i<Pools.size();i++)
@@ -103,12 +103,32 @@ public class WorkFlow {
 			return null;
 		}
 	
+		public void retirer_objet(int id)// retire un objet selon son id
+		{
+			Pool p=get_pool(get_pool_objet(id));
+			ObjectBPMN o=get_objet(id);
+			ArrayList<ObjectBPMN> lst=o.getLinks_arrivant();
+			for(int i=0;i<lst.size();i++)
+			{
+				unlinker(id,lst.get(i).getId());
+			}
+			
+			ArrayList<ObjectBPMN> lst2=o.getLinks_partant();
+			for(int i=0;i<lst2.size();i++)
+			{
+				unlinker(id,lst2.get(i).getId());
+			}
+			p.delete_obj(id);
+			
+			
+		}
+		
 	// créé un lien entre deux objets 
 	// source : id1 target : id2
 	public void linker(int id1,int id2)
 	{
-		Object o1=get_objet(id1);
-		Object o2=get_objet(id2);
+		ObjectBPMN o1=get_objet(id1);
+		ObjectBPMN o2=get_objet(id2);
 		
 		if(o1!=null && o2!=null && o1.linkable_partant() && o2.linkable_arrivant())
 		{
@@ -126,8 +146,8 @@ public class WorkFlow {
 	// source : id1 target id2
 	public void unlinker(int id1,int id2)
 	{
-		Object o1=get_objet(id1);
-		Object o2=get_objet(id2);
+		ObjectBPMN o1=get_objet(id1);
+		ObjectBPMN o2=get_objet(id2);
 		o1.unlink(o2);
 		o2.unlink(o1);
 	}
@@ -140,11 +160,17 @@ public class WorkFlow {
 		for(int i=0;i<Pools.size();i++)
 		{
 			Pools.get(i).affiche(g);
-			ArrayList<Object> Objects=Pools.get(i).getObjects();
+			ArrayList<ObjectBPMN> Objects=Pools.get(i).getObjects();
+			for(int j=0;j<Objects.size();j++)
+			{
+				Objects.get(j).affiche_link(g);
+			}
 			for(int j=0;j<Objects.size();j++)
 			{
 				Objects.get(j).affiche(g);
 			}
+			
+			
 		}
 		
 	}
@@ -155,12 +181,12 @@ public class WorkFlow {
 	public void optimise()
 	{
 		
-		ArrayList<ArrayList<Object>> Matrice = new ArrayList<ArrayList<Object>>();
-		ArrayList<Object> Ligne;
+		ArrayList<ArrayList<ObjectBPMN>> Matrice = new ArrayList<ArrayList<ObjectBPMN>>();
+		ArrayList<ObjectBPMN> Ligne;
 		
-		Object o=get_objet(1);
+		ObjectBPMN o=get_objet(1);
 		
-		Ligne=new ArrayList<Object>();
+		Ligne=new ArrayList<ObjectBPMN>();
 		Ligne.add(o);
 		Matrice.add(Ligne);
 		Matrice=opt(Matrice,o,Matrice.size()-1,0,0);
@@ -172,7 +198,7 @@ public class WorkFlow {
 		
 	}
 	
-	public boolean estdans(ArrayList<ArrayList<Object>> mat,Object o)
+	public boolean estdans(ArrayList<ArrayList<ObjectBPMN>> mat,ObjectBPMN o)
 	{
 		for(int i=0;i<mat.size();i++)
 			for(int j=0;j<mat.get(i).size();j++)
@@ -180,7 +206,7 @@ public class WorkFlow {
 		return false;
 	}
 	
-	public int estdansligne(ArrayList<ArrayList<Object>> mat,Object o)
+	public int estdansligne(ArrayList<ArrayList<ObjectBPMN>> mat,ObjectBPMN o)
 	{
 		for(int i=0;i<mat.size();i++)
 			for(int j=0;j<mat.get(i).size();j++)
@@ -188,7 +214,7 @@ public class WorkFlow {
 		return -1;
 	}
 	
-	public int estdanscol(ArrayList<ArrayList<Object>> mat,Object o)
+	public int estdanscol(ArrayList<ArrayList<ObjectBPMN>> mat,ObjectBPMN o)
 	{
 		for(int i=0;i<mat.size();i++)
 			for(int j=0;j<mat.get(i).size();j++)
@@ -196,16 +222,16 @@ public class WorkFlow {
 		return -1;
 	}
 	
-	public ArrayList<ArrayList<Object>> opt(ArrayList<ArrayList<Object>> mat,Object o,int l,int pos,int col)
+	public ArrayList<ArrayList<ObjectBPMN>> opt(ArrayList<ArrayList<ObjectBPMN>> mat,ObjectBPMN o,int l,int pos,int col)
 	{
-		ArrayList<Object> partant= o.getLinks_partant();
-		ArrayList<Object> arrivant= o.getLinks_arrivant();
+		ArrayList<ObjectBPMN> partant= o.getLinks_partant();
+		ArrayList<ObjectBPMN> arrivant= o.getLinks_arrivant();
 		
 		if(o.getId()!=1)
 		if(l==-1) 
 		{   
 			pos=0;
-			ArrayList<Object> Ligne =  new ArrayList<Object>();
+			ArrayList<ObjectBPMN> Ligne =  new ArrayList<ObjectBPMN>();
 			Ligne.add(o);
 			mat.add(Ligne);
 			l=mat.size()-1;
@@ -236,7 +262,7 @@ public class WorkFlow {
 		}
 		
 		
-		if(o.getId()==10)System.out.println(get_pool_objet(o.getId())==get_pool_objet(partant.get(0).getId()));
+		
 		for(int j=0;j<partant.size();j++)
 		{
 			if(!estdans(mat,partant.get(j)))
@@ -251,7 +277,7 @@ public class WorkFlow {
 	public int get_min_pos()
 	{
 		int min=0;
-		for(int i=1;i<=nb_obj;i++) if(get_objet(i).getColone()<min) min=get_objet(i).getColone();
+		for(int i=1;i<=nb_obj;i++) if(get_objet(i)!=null && get_objet(i).getColone()<min) min=get_objet(i).getColone();
 		return min;
 	}
 	
@@ -259,18 +285,18 @@ public class WorkFlow {
 		public int get_max_pos()
 		{
 			int max=0;
-			for(int i=1;i<=nb_obj;i++) if(get_objet(i).getColone()>max) max=get_objet(i).getColone();
+			for(int i=1;i<=nb_obj;i++) if(get_objet(i)!=null && get_objet(i).getColone()>max) max=get_objet(i).getColone();
 			return max;
 		}
 	
 	public int get_max_taille_col(int col) // renvois la taille max d'une colone
 	{
 		int max=0;
-		for(int i=1;i<=nb_obj;i++) if(get_objet(i).getColone()==col && get_objet(i).getL()>max) max=get_objet(i).getL(); // on garde la largeur max
+		for(int i=1;i<=nb_obj;i++) if(get_objet(i)!=null && get_objet(i).getColone()==col && get_objet(i).getL()>max) max=get_objet(i).getL(); // on garde la largeur max
 		return max;
 	}
 	
-	public int get_max_taille_ligne(ArrayList<Object> ligne) // retourne la hauteur d'une ligne
+	public int get_max_taille_ligne(ArrayList<ObjectBPMN> ligne) // retourne la hauteur d'une ligne
 	{
 		int max=0;
 		for(int i=0;i<ligne.size();i++) if(ligne.get(i).getH()>max)max=ligne.get(i).getH();
@@ -281,8 +307,22 @@ public class WorkFlow {
 	protected int espace_h=30;
 	protected int espace_l=30;
 	
+	// méthode pour recuperer tous les objets d'une colones
+	public ArrayList<ObjectBPMN> get_objects_col(int col)
+	{
+		ArrayList<ObjectBPMN> colone = new ArrayList<ObjectBPMN>();
+		for(int i=1;i<=nb_obj;i++)
+		{
+			ObjectBPMN o=get_objet(i);
+			if(o!=null && o.getColone()==col) colone.add(o);
+		}
+		
+		return colone;
+	}
+	
+	
 	// Fonction modifiant les emplacements suite à l'optimisation
-	public void place(ArrayList<ArrayList<Object>> mat)
+	public void place(ArrayList<ArrayList<ObjectBPMN>> mat)
 	{
 		int min = get_min_pos();
 		int max = get_max_pos();
@@ -332,7 +372,7 @@ public class WorkFlow {
 			for(int j=0;j<Col_taille.size();j++)// parcour des colones
 			{
 				
-				Object o=get_objet(i,j);
+				ObjectBPMN o=get_objet(i,j);
 				if(o!=null)
 				{
 				if(o.getId()==12)System.out.println("hauteur : "+o.getY());
@@ -356,6 +396,28 @@ public class WorkFlow {
 			posy+=taille_pool.get(i);
 		}
 		
+		
+		// choix des priorités sur l'afffichage des liens dans une même colone
+		ArrayList<ObjectBPMN> lst = new ArrayList<ObjectBPMN>();
+		for(int k=min;k<=max;k++) {
+			lst =get_objects_col(k);
+			int prio=0;
+			for(int i=0;i<lst.size();i++)
+			{
+				if(lst.get(i).getPrio()==-1)
+				{
+					lst.get(i).setPrio(prio);
+					ArrayList<ObjectBPMN> olist=lst.get(i).getLinks_partant();
+					for(int m=0;m<olist.size();m++)
+						if(olist.get(m).getColone()==k)
+						{
+						olist.get(m).setPrio(prio);
+						prio++;
+						}					
+				}
+			}
+		}
+		
 	}
 
 	
@@ -369,4 +431,70 @@ public class WorkFlow {
 	public void setPools(ArrayList<Pool> pools) {
 		Pools = pools;
 	}
+
+	public IdGenerator getIter() {
+		return iter;
+	}
+
+	public void setIter(IdGenerator iter) {
+		this.iter = iter;
+	}
+
+	public int getH() {
+		return h;
+	}
+
+	public void setH(int h) {
+		this.h = h;
+	}
+
+	public int getL() {
+		return l;
+	}
+
+	public void setL(int l) {
+		this.l = l;
+	}
+
+	public int getNb_obj() {
+		return nb_obj;
+	}
+
+	public void setNb_obj(int nb_obj) {
+		this.nb_obj = nb_obj;
+	}
+
+	public int getEcart_H() {
+		return ecart_H;
+	}
+
+	public void setEcart_H(int ecart_H) {
+		this.ecart_H = ecart_H;
+	}
+
+	public int getEcart_L() {
+		return ecart_L;
+	}
+
+	public void setEcart_L(int ecart_L) {
+		this.ecart_L = ecart_L;
+	}
+
+	public int getEspace_h() {
+		return espace_h;
+	}
+
+	public void setEspace_h(int espace_h) {
+		this.espace_h = espace_h;
+	}
+
+	public int getEspace_l() {
+		return espace_l;
+	}
+
+	public void setEspace_l(int espace_l) {
+		this.espace_l = espace_l;
+	}
+	
+	
 }

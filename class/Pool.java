@@ -7,7 +7,7 @@ import java.util.List;
 public class Pool {
 private String label;
 private int y=0,h=0,l=0;
-private ArrayList<Object> Objects=new ArrayList<Object>();
+private ArrayList<ObjectBPMN> Objects=new ArrayList<ObjectBPMN>();
 
 public Pool(String lbl,int yi,int hi,int li)
 {
@@ -19,7 +19,7 @@ public Pool(String lbl,int yi,int hi,int li)
 
 
 
-public void AddObject(Object o)
+public void AddObject(ObjectBPMN o)
 {
 	Objects.add(o);
 }
@@ -30,6 +30,15 @@ public void affiche(Graphics g)
 	g.drawRect(0,y,20,h);
 	int posy=y+h/2-label.length()/2;
 	for(int i=0;i<label.length();i++)  g.drawString(""+label.charAt(i),3,posy+i*12);
+}
+
+
+public void delete_obj(int id)
+{
+	for(int i=0;i<Objects.size();i++)
+	{
+		if(Objects.get(i).getId()==id)Objects.remove(i);
+	}
 }
 
 
@@ -46,11 +55,11 @@ public void setLabel(String label) {
 	this.label = label;
 }
 
-public ArrayList<Object> getObjects() {
+public ArrayList<ObjectBPMN> getObjects() {
 	return Objects;
 }
 
-public void setObjects(ArrayList<Object> objects) {
+public void setObjects(ArrayList<ObjectBPMN> objects) {
 	Objects = objects;
 }
 

@@ -2,14 +2,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 
-public class End extends Object{
+public class End extends ObjectBPMN{
 
 	public End(){
 		super();
 		max_link_partant=0;
 		max_link_arrivant=1;
-		h=30;
-		l=30;
+		h=40;
+		l=40;
 	}
 	
 	public void affiche(Graphics g)

@@ -54,14 +54,15 @@ public class Fenetre extends JFrame {
 	wf.linker(2, 6);
 	wf.linker(3, 6);
 	
-	wf.linker(6, 7);
+	wf.linker(6, 10);
 	wf.linker(3, 4);
 	wf.linker(9, 8);
-	wf.linker(7, 10);
+	//wf.linker(7, 10);
 	
 
-	wf.addObject(1, nd2);
-	wf.linker(10, 11);
+	wf.addObject(0, nd2);
+	wf.linker(10, 7);
+	wf.linker(7, 11);
 	
 	
 	Task sta2= new Task("taskTest");
@@ -73,11 +74,13 @@ public class Fenetre extends JFrame {
     wf.addObject(0,sta3);
     wf.linker(6, 13);
 	wf.linker(13, 3);
-	
+	//wf.retirer_objet(10);
+	System.out.println("taille ::"+wf.get_objet(7).getLinks_partant().size());
     Panneau pan=new Panneau(wf);
     this.setContentPane(pan);
 
     wf.optimise();
+ 
    // System.out.println(stt2.getColone());
     this.setVisible(true);
   }     

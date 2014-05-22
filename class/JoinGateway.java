@@ -2,14 +2,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 
-public class JoinGateway extends Object{
+public class JoinGateway extends ObjectBPMN{
 
 	public JoinGateway(){
 		super();
 		max_link_partant=1;
 		max_link_arrivant=-1;
-		h=30;
-		l=30;
+		h=40;
+		l=40;
 	}
 	
 	public void affiche(Graphics g)

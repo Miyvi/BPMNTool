@@ -2,14 +2,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 
-public class SplitGateway extends Object{
+public class SplitGateway extends ObjectBPMN{
 
 	public SplitGateway(){
 		super();
 		max_link_partant=-1;
 		max_link_arrivant=1;
-		h=30;
-		l=30;
+		h=40;
+		l=40;
 	}
 	
 	public void affiche(Graphics g)
@@ -26,8 +26,8 @@ public class SplitGateway extends Object{
 	    g.setColor(Color.black);
 	    g.drawPolygon(xt, yt, 4);
 		
-		g.drawLine(x+2*l/6, y+2*h/6,x+4*(l/6), y+4*(h/6));
-		g.drawLine(x+2*l/6, y+4*h/6,x+4*(l/6), y+2*(h/6));
+		g.drawLine(x+3*l/10, y+3*(h/10),x+7*(l/10), y+7*(h/10));
+		g.drawLine(x+3*l/10, y+7*(h/10),x+7*(l/10), y+3*(h/10));
 		
 		super.affiche(g);
 	}

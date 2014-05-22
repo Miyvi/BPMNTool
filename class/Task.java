@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 
 
-public class Task extends Object{
+public class Task extends ObjectBPMN{
 	String label="";
 	public Task(String lbl){
 		super();
