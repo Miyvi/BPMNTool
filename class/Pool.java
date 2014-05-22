@@ -26,8 +26,8 @@ public void AddObject(Object o)
 
 public void affiche(Graphics g)
 {
-	g.drawRect(0,y,l,h+y);
-	g.drawRect(0,y,20,h+y);
+	g.drawRect(0,y,l,h);
+	g.drawRect(0,y,20,h);
 	int posy=y+h/2-label.length()/2;
 	for(int i=0;i<label.length();i++)  g.drawString(""+label.charAt(i),3,posy+i*12);
 }

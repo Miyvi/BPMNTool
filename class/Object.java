@@ -8,6 +8,7 @@ abstract class Object {
 protected int id;
 protected int x,y; // position
 protected int l,h; // largeur/hauteur
+protected int ligne,colone; // utilisé pour le placement
 protected ArrayList<Object> links_partant=new ArrayList<Object>(); // liens partant
 protected ArrayList<Object> links_arrivant=new ArrayList<Object>(); // liens arrivant
 int max_link_partant,max_link_arrivant; // nombre de liens max définis pour chaque type d'objet hérité
@@ -16,6 +17,13 @@ public Object()
 {
 	x=0;
 	y=0;
+	ligne=0;
+	colone=0;
+}
+
+public String toString()
+{
+	return Integer.toString(id);
 }
 
 
@@ -206,6 +214,22 @@ public int getMax_link_arrivant() {
 
 public void setMax_link_arrivant(int max_link_arrivant) {
 	this.max_link_arrivant = max_link_arrivant;
+}
+
+public int getLigne() {
+	return ligne;
+}
+
+public void setLigne(int ligne) {
+	this.ligne = ligne;
+}
+
+public int getColone() {
+	return colone;
+}
+
+public void setColone(int colone) {
+	this.colone = colone;
 }
 
 
